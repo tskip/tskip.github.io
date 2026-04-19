@@ -312,249 +312,8 @@
       );
     };
 
-    // ============ VARIANT B: Terminal-inspired ============
-    const VariantB = () => {
-      const [active, setActive] = useState("about");
-      const sections = [
-        { id: "about", label: "~/about" },
-        { id: "projects", label: "~/projects" },
-        { id: "suites", label: "~/suites" },
-        { id: "skills", label: "~/skills" },
-        { id: "experience", label: "~/experience" },
-        { id: "contact", label: "~/contact" }
-      ];
-
-      useEffect(() => {
-        const observers = sections.map(({ id }) => {
-          const el = document.getElementById(`b-${id}`);
-          if (!el) return null;
-          const obs = new IntersectionObserver(([entry]) => {
-            if (entry.isIntersecting) setActive(id);
-          }, { rootMargin: "-40% 0px -55% 0px" });
-          obs.observe(el);
-          return obs;
-        });
-        return () => observers.forEach(o => o && o.disconnect());
-      }, []);
-
-      const scrollTo = id => {
-        const el = document.getElementById(`b-${id}`);
-        if (el) {
-          const top = el.getBoundingClientRect().top + window.scrollY - 80;
-          window.scrollTo({ top, behavior: "smooth" });
-        }
-      };
-
-      return (
-        <div className="variant-b">
-          <header className="b-topbar">
-            <div className="b-topbar-inner">
-              <div className="b-brand mono">
-                <span className="b-cursor">▍</span>
-                <span className="b-brand-name">tyrus.skipper</span>
-                <span className="b-brand-sep">:</span>
-                <span className="b-brand-role">qa-analyst</span>
-              </div>
-              <nav className="b-nav mono">
-                {sections.map(s => (
-                  <button key={s.id} onClick={() => scrollTo(s.id)} className={`b-nav-item ${active === s.id ? "active" : ""}`}>
-                    {s.label}
-                  </button>
-                ))}
-              </nav>
-              <a href={DATA.links.linkedin} target="_blank" rel="noopener" className="b-topbar-cta mono">
-                <Icon.LinkedIn />
-                <span>linkedin</span>
-              </a>
-            </div>
-          </header>
-
-          <main className="b-main">
-            <section id="b-about" className="b-hero">
-              <div className="b-hero-grid">
-                <div className="b-hero-left">
-                  <div className="b-prompt mono">$ whoami</div>
-                  <h1 className="b-hero-name">{DATA.name}</h1>
-                  <div className="b-hero-role mono">&gt; {DATA.role}</div>
-                  <p className="b-hero-tagline">{DATA.tagline}</p>
-
-                  <div className="b-cert-row">
-                    {DATA.certifications.map(c => (
-                      <a key={c.label} href={c.url} target="_blank" rel="noopener" className="b-cert mono">
-                        <span className="b-cert-dot" />
-                        {c.label}
-                        <Icon.Arrow />
-                      </a>
-                    ))}
-                  </div>
-
-                  <div className="b-hero-actions">
-                    <CopyEmail email={DATA.links.email} variant="b" />
-                    <a href={DATA.links.linkedin} target="_blank" rel="noopener" className="b-link-btn mono">
-                      <Icon.LinkedIn /> linkedin.com/in/tyrus-skipper
-                    </a>
-                  </div>
-                </div>
-
-                <div className="b-hero-right">
-                  <div className="b-terminal">
-                    <div className="b-terminal-bar">
-                      <span className="b-term-dot r"></span>
-                      <span className="b-term-dot y"></span>
-                      <span className="b-term-dot g"></span>
-                      <span className="b-term-title mono">tyrus@portfolio — zsh</span>
-                    </div>
-                    <div className="b-terminal-body mono">
-                      <div className="b-term-line"><span className="b-prompt-sm">$</span> cat about.md</div>
-                      {DATA.about.map((p, i) => (
-                        <div key={i} className="b-term-output">{p}</div>
-                      ))}
-                      <div className="b-term-line"><span className="b-prompt-sm">$</span> ls ./focus</div>
-                      <div className="b-term-output">
-                        manual_testing/   automation/   test_design/<br/>
-                        regression/       api_testing/  risk_analysis/
-                      </div>
-                      <div className="b-term-line"><span className="b-prompt-sm">$</span> <span className="b-term-blink">▍</span></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <section id="b-projects" className="b-section">
-              <div className="b-section-head">
-                <div className="b-section-tag mono">// 02</div>
-                <h2>Projects & Apps</h2>
-                <div className="b-section-line"/>
-                <div className="b-section-count mono">{DATA.projects.length} items</div>
-              </div>
-              <div className="b-project-grid">
-                {DATA.projects.map((p, i) => (
-                  <a key={i} href={p.link} className="b-project">
-                    <div className="b-project-head">
-                      <span className="b-project-num mono">[{String(i + 1).padStart(2, "0")}]</span>
-                      <span className="b-project-status mono">{p.status === "coming-soon" ? "⧗ tba" : "● live"}</span>
-                    </div>
-                    <Placeholder label={`./${p.name.toLowerCase().replace(/\s+/g, "-")}`} aspect="16/9" />
-                    <div className="b-project-body">
-                      <h3>{p.name}</h3>
-                      <p>{p.desc}</p>
-                      <div className="b-project-foot">
-                        <div className="b-tags mono">
-                          {p.tech.map(t => <span key={t}>{t}</span>)}
-                        </div>
-                        <Icon.Arrow />
-                      </div>
-                    </div>
-                  </a>
-                ))}
-              </div>
-            </section>
-
-            <section id="b-suites" className="b-section">
-              <div className="b-section-head">
-                <div className="b-section-tag mono">// 03</div>
-                <h2>Automated Testing Suites</h2>
-                <div className="b-section-line"/>
-                <div className="b-section-count mono">personal</div>
-              </div>
-              <div className="b-suite-table">
-                <div className="b-suite-header mono">
-                  <span>#</span>
-                  <span>suite</span>
-                  <span>tools</span>
-                  <span>coverage</span>
-                  <span></span>
-                </div>
-                {DATA.suites.map((s, i) => (
-                  <a key={i} href={s.link} className="b-suite-row">
-                    <span className="mono b-suite-idx">{String(i + 1).padStart(2, "0")}</span>
-                    <div className="b-suite-main">
-                      <div className="b-suite-name">{s.name}</div>
-                      <div className="b-suite-desc">{s.desc}</div>
-                    </div>
-                    <div className="mono b-suite-tools">{s.tools.join(", ")}</div>
-                    <div className="mono b-suite-cov">{s.coverage}</div>
-                    <Icon.Arrow />
-                  </a>
-                ))}
-              </div>
-            </section>
-
-            <section id="b-skills" className="b-section">
-              <div className="b-section-head">
-                <div className="b-section-tag mono">// 04</div>
-                <h2>Skills & Stack</h2>
-                <div className="b-section-line"/>
-              </div>
-              <div className="b-skill-grid">
-                {Object.entries(DATA.skills).map(([cat, items]) => (
-                  <div key={cat} className="b-skill-block">
-                    <div className="b-skill-cat mono">› {cat.toLowerCase()}</div>
-                    <div className="b-skill-items">
-                      {items.map(s => <span key={s} className="b-skill-chip mono">{s}</span>)}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section id="b-experience" className="b-section">
-              <div className="b-section-head">
-                <div className="b-section-tag mono">// 05</div>
-                <h2>Experience</h2>
-                <div className="b-section-line"/>
-              </div>
-              <div className="b-timeline">
-                {DATA.experience.map((e, i) => (
-                  <div key={i} className="b-exp">
-                    <div className="b-exp-period mono">{e.period}</div>
-                    <div className="b-exp-body">
-                      <div className="b-exp-title-row">
-                        <h3>{e.role}</h3>
-                        <span className="b-exp-co mono">@ {e.company}</span>
-                      </div>
-                      <ul>
-                        {e.bullets.map((b, j) => <li key={j}>{b}</li>)}
-                      </ul>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section id="b-contact" className="b-section b-contact">
-              <div className="b-section-head">
-                <div className="b-section-tag mono">// 06</div>
-                <h2>Contact</h2>
-                <div className="b-section-line"/>
-              </div>
-              <div className="b-contact-grid">
-                <div className="b-contact-card">
-                  <div className="mono b-contact-label">$ echo $EMAIL</div>
-                  <CopyEmail email={DATA.links.email} variant="b" />
-                </div>
-                <a href={DATA.links.linkedin} target="_blank" rel="noopener" className="b-contact-card b-contact-link">
-                  <div className="mono b-contact-label">$ open $LINKEDIN</div>
-                  <div className="b-contact-val">
-                    <Icon.LinkedIn />
-                    <span>linkedin.com/in/tyrus-skipper</span>
-                    <Icon.Arrow />
-                  </div>
-                </a>
-              </div>
-              <footer className="b-footer mono">
-                <span>// © 2026 {DATA.name}</span>
-                <span>built &amp; tested — apr 2026</span>
-              </footer>
-            </section>
-          </main>
-        </div>
-      );
-    };
-
     // ============ TWEAKS PANEL ============
-    const Tweaks = ({ variant, setVariant, accent, setAccent, onClose }) => {
+    const Tweaks = ({ accent, setAccent, onClose }) => {
       const accents = [
         { key: "cyan", label: "Cyan", color: "oklch(78% 0.13 200)" },
         { key: "lime", label: "Lime", color: "oklch(82% 0.14 130)" },
@@ -568,19 +327,6 @@
             <button onClick={onClose} className="tweaks-close" aria-label="Close">×</button>
           </div>
           <div className="tweaks-body">
-            <div className="tweaks-section">
-              <div className="tweaks-label">Layout</div>
-              <div className="tweaks-variants">
-                <button className={variant === "a" ? "active" : ""} onClick={() => setVariant("a")}>
-                  <div className="tweaks-variant-name">A · Sidebar</div>
-                  <div className="tweaks-variant-desc">Classic two-col</div>
-                </button>
-                <button className={variant === "b" ? "active" : ""} onClick={() => setVariant("b")}>
-                  <div className="tweaks-variant-name">B · Terminal</div>
-                  <div className="tweaks-variant-desc">Mono, dev-inspired</div>
-                </button>
-              </div>
-            </div>
             <div className="tweaks-section">
               <div className="tweaks-label">Accent</div>
               <div className="tweaks-accents">
@@ -599,7 +345,6 @@
 
     // ============ ROOT ============
     const Portfolio = ({ defaults }) => {
-      const [variant, setVariant] = useState(defaults.variant);
       const [accent, setAccent] = useState(defaults.accent);
       const [tweaksOpen, setTweaksOpen] = useState(false);
 
@@ -624,11 +369,9 @@
 
       return (
         <>
-          {variant === "a" ? <VariantA /> : <VariantB />}
+          <VariantA />
           {tweaksOpen ? (
             <Tweaks
-              variant={variant}
-              setVariant={setVariant}
               accent={accent}
               setAccent={setAccent}
               onClose={() => setTweaksOpen(false)}
@@ -644,7 +387,7 @@
     };
 
     const root = ReactDOM.createRoot(document.getElementById("root"));
-    root.render(<Portfolio defaults={{ variant: "a", accent: "cyan" }} />);
+    root.render(<Portfolio defaults={{ accent: "cyan" }} />);
   </script>
 </body>
 </html>
