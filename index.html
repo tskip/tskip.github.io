@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tyrus Skipper — QA Analyst</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" data-presets="react">
+    const { useState, useEffect } = React;
+
+    // ============ DATA ============
+    const DATA = {
+      name: "Tyrus Skipper",
+      role: "Software Quality Assurance Analyst",
+      tagline: "ISTQB Certified — CTFL | CPST Certified | Ready to help the world one test at a time.",
+      about: [
+        "I'm a QA Analyst who treats testing as a craft. My goal on any team is simple: ship software that behaves the way users expect, every time.",
+        "I build structured test plans, automate the repetitive, and hunt the edge cases that slip past. If it can break, I want to find it before your customers do."
+      ],
+      certifications: [
+        { label: "ISTQB — CTFL", url: "https://tinyurl.com/ctflcertification" },
+        { label: "Selenium CPST", url: "https://tinyurl.com/seleniumcertificationbadge" }
+      ],
+      links: {
+        linkedin: "https://www.linkedin.com/in/tyrus-skipper",
+        email: "tskip06@gmail.com"
+      },
+      projects: [
+        { name: "Project One", desc: "Placeholder — add your showcased application here.", tech: ["TBD"], link: "#", status: "coming-soon" },
+        { name: "Project Two", desc: "Placeholder — another flagship app or tool.", tech: ["TBD"], link: "#", status: "coming-soon" },
+        { name: "Project Three", desc: "Placeholder — personal build, side project, or team contribution.", tech: ["TBD"], link: "#", status: "coming-soon" }
+      ],
+      suites: [
+        { name: "Suite One", desc: "Placeholder — end-to-end automation suite.", tools: ["Selenium"], coverage: "—", link: "#" },
+        { name: "Suite Two", desc: "Placeholder — regression or smoke suite.", tools: ["TBD"], coverage: "—", link: "#" },
+        { name: "Suite Three", desc: "Placeholder — API or performance suite.", tools: ["TBD"], coverage: "—", link: "#" }
+      ],
+      skills: {
+        "Testing": ["Manual Testing", "Test Case Design", "Regression", "Smoke Testing", "UAT", "Exploratory Testing"],
+        "Automation": ["Selenium", "Playwright", "Cypress", "Postman", "REST Assured"],
+        "Methodologies": ["Agile / Scrum"],
+        "Tools": ["Jira", "Confluence", "Claude"]
+      },
+      experience: [
+        { role: "Software QA Analyst", company: "Dumac Business Systems, Inc.", period: "Apr 2024 - Present", bullets: ["Placeholder responsibility — replace with your real experience.", "Placeholder responsibility.", "Placeholder responsibility."] },
+        { role: "Previous Role", company: "Lighthouse360", period: "Feb 2020 - Apr 2024", bullets: ["Placeholder responsibility.", "Placeholder responsibility."] }
+      ]
+    };
+
+    // ============ ICONS ============
+    const Icon = {
+      Arrow: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M7 17L17 7M17 7H9M17 7v8"/></svg>,
+      Copy: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>,
+      Check: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 13l4 4L19 7"/></svg>,
+      LinkedIn: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>,
+      Mail: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>,
+      Badge: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="5"/><path d="M8.5 12.5L7 22l5-3 5 3-1.5-9.5"/></svg>,
+      Dot: () => <svg width="6" height="6" viewBox="0 0 6 6"><circle cx="3" cy="3" r="3" fill="currentColor"/></svg>
+    };
+
+    // ============ SHARED BITS ============
+    const CopyEmail = ({ email, variant = "a" }) => {
+      const [copied, setCopied] = useState(false);
+      const copy = () => {
+        navigator.clipboard.writeText(email).then(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 1800);
+        });
+      };
+      const cls = variant === "b" ? "copy-chip mono" : "copy-chip";
+      return (
+        <button className={cls} onClick={copy} aria-label="Copy email">
+          <span className="copy-email-text">{email}</span>
+          <span className="copy-icon">{copied ? <Icon.Check /> : <Icon.Copy />}</span>
+          <span className={`copy-tip ${copied ? "show" : ""}`}>{copied ? "copied" : "copy"}</span>
+        </button>
+      );
+    };
+
+    const Placeholder = ({ label, aspect = "4/3" }) => (
+      <div className="placeholder" style={{ aspectRatio: aspect }}>
+        <svg className="placeholder-stripes" width="100%" height="100%" preserveAspectRatio="none">
+          <defs>
+            <pattern id="stripes" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(45)">
+              <rect width="8" height="8" fill="transparent"/>
+              <line x1="0" y1="0" x2="0" y2="8" stroke="currentColor" strokeWidth="1" opacity="0.18"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#stripes)"/>
+        </svg>
+        <span className="placeholder-label">{label}</span>
+      </div>
+    );
+
+    // ============ VARIANT A: Classic sidebar + cards ============
+    const VariantA = () => {
+      const [active, setActive] = useState("about");
+      const sections = ["about", "projects", "suites", "skills", "experience", "contact"];
+
+      useEffect(() => {
+        const observers = sections.map(id => {
+          const el = document.getElementById(`a-${id}`);
+          if (!el) return null;
+          const obs = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) setActive(id);
+          }, { rootMargin: "-40% 0px -55% 0px" });
+          obs.observe(el);
+          return obs;
+        });
+        return () => observers.forEach(o => o && o.disconnect());
+      }, []);
+
+      const scrollTo = id => {
+        const el = document.getElementById(`a-${id}`);
+        if (el) {
+          const top = el.getBoundingClientRect().top + window.scrollY - 40;
+          window.scrollTo({ top, behavior: "smooth" });
+        }
+      };
+
+      return (
+        <div className="variant-a">
+          <aside className="a-sidebar">
+            <div className="a-brand">
+              <div className="a-avatar">
+                <Placeholder label="PHOTO" aspect="1/1" />
+              </div>
+              <div className="a-name">{DATA.name}</div>
+              <div className="a-role">{DATA.role}</div>
+              <p className="a-tagline">{DATA.tagline}</p>
+            </div>
+
+            <nav className="a-nav">
+              {sections.map(s => (
+                <button key={s} onClick={() => scrollTo(s)} className={`a-nav-item ${active === s ? "active" : ""}`}>
+                  <span className="a-nav-bar" />
+                  <span className="a-nav-label">{s}</span>
+                </button>
+              ))}
+            </nav>
+
+            <div className="a-sidebar-footer">
+              <a href={DATA.links.linkedin} target="_blank" rel="noopener" className="a-social">
+                <Icon.LinkedIn /> LinkedIn
+              </a>
+              <div className="a-available">
+                <span className="pulse" /> Available for work
+              </div>
+            </div>
+          </aside>
+
+          <main className="a-main">
+            <section id="a-about" className="a-section">
+              <div className="a-section-head">
+                <span className="a-index">01</span>
+                <h2>About</h2>
+              </div>
+              <div className="a-about-grid">
+                <div className="a-about-copy">
+                  {DATA.about.map((p, i) => <p key={i}>{p}</p>)}
+                </div>
+                <div className="a-certs">
+                  <div className="a-certs-label">Certifications</div>
+                  {DATA.certifications.map(c => (
+                    <a key={c.label} href={c.url} target="_blank" rel="noopener" className="a-cert">
+                      <Icon.Badge />
+                      <span>{c.label}</span>
+                      <Icon.Arrow />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <section id="a-projects" className="a-section">
+              <div className="a-section-head">
+                <span className="a-index">02</span>
+                <h2>Projects & Apps</h2>
+                <span className="a-section-note">More coming soon</span>
+              </div>
+              <div className="a-project-grid">
+                {DATA.projects.map((p, i) => (
+                  <a key={i} href={p.link} className="a-card a-project">
+                    <Placeholder label={p.name.toUpperCase()} aspect="16/10" />
+                    <div className="a-card-body">
+                      <div className="a-card-title-row">
+                        <h3>{p.name}</h3>
+                        <Icon.Arrow />
+                      </div>
+                      <p>{p.desc}</p>
+                      <div className="a-tags">
+                        {p.tech.map(t => <span key={t} className="a-tag">{t}</span>)}
+                      </div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </section>
+
+            <section id="a-suites" className="a-section">
+              <div className="a-section-head">
+                <span className="a-index">03</span>
+                <h2>Automated Testing Suites</h2>
+                <span className="a-section-note">Personal</span>
+              </div>
+              <div className="a-suite-list">
+                {DATA.suites.map((s, i) => (
+                  <a key={i} href={s.link} className="a-card a-suite">
+                    <div className="a-suite-marker">
+                      <span className="mono">{String(i + 1).padStart(2, "0")}</span>
+                    </div>
+                    <div className="a-suite-body">
+                      <div className="a-card-title-row">
+                        <h3>{s.name}</h3>
+                        <Icon.Arrow />
+                      </div>
+                      <p>{s.desc}</p>
+                    </div>
+                    <div className="a-suite-meta">
+                      <div className="a-suite-meta-row">
+                        <span className="a-suite-meta-label">Tools</span>
+                        <span>{s.tools.join(" · ")}</span>
+                      </div>
+                      <div className="a-suite-meta-row">
+                        <span className="a-suite-meta-label">Coverage</span>
+                        <span className="mono">{s.coverage}</span>
+                      </div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </section>
+
+            <section id="a-skills" className="a-section">
+              <div className="a-section-head">
+                <span className="a-index">04</span>
+                <h2>Skills & Stack</h2>
+              </div>
+              <div className="a-skill-grid">
+                {Object.entries(DATA.skills).map(([cat, items]) => (
+                  <div key={cat} className="a-skill-block">
+                    <div className="a-skill-cat">{cat}</div>
+                    <div className="a-skill-items">
+                      {items.map(s => <span key={s} className="a-skill-chip">{s}</span>)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section id="a-experience" className="a-section">
+              <div className="a-section-head">
+                <span className="a-index">05</span>
+                <h2>Experience</h2>
+              </div>
+              <div className="a-timeline">
+                {DATA.experience.map((e, i) => (
+                  <div key={i} className="a-timeline-item">
+                    <div className="a-timeline-period mono">{e.period}</div>
+                    <div className="a-timeline-body">
+                      <div className="a-timeline-title">
+                        <h3>{e.role}</h3>
+                        <span className="a-timeline-co">{e.company}</span>
+                      </div>
+                      <ul>
+                        {e.bullets.map((b, j) => <li key={j}>{b}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section id="a-contact" className="a-section a-contact">
+              <div className="a-section-head">
+                <span className="a-index">06</span>
+                <h2>Get in touch</h2>
+              </div>
+              <div className="a-contact-card">
+                <p className="a-contact-lead">
+                  Open to QA roles, contract testing work, and automation projects. The fastest way to reach me:
+                </p>
+                <div className="a-contact-actions">
+                  <CopyEmail email={DATA.links.email} variant="a" />
+                  <a href={DATA.links.linkedin} target="_blank" rel="noopener" className="a-contact-link">
+                    <Icon.LinkedIn />
+                    <span>LinkedIn</span>
+                    <Icon.Arrow />
+                  </a>
+                </div>
+              </div>
+              <footer className="a-footer mono">
+                <span>© 2026 {DATA.name}</span>
+                <span>Built with care · Last updated Apr 2026</span>
+              </footer>
+            </section>
+          </main>
+        </div>
+      );
+    };
+
+    // ============ VARIANT B: Terminal-inspired ============
+    const VariantB = () => {
+      const [active, setActive] = useState("about");
+      const sections = [
+        { id: "about", label: "~/about" },
+        { id: "projects", label: "~/projects" },
+        { id: "suites", label: "~/suites" },
+        { id: "skills", label: "~/skills" },
+        { id: "experience", label: "~/experience" },
+        { id: "contact", label: "~/contact" }
+      ];
+
+      useEffect(() => {
+        const observers = sections.map(({ id }) => {
+          const el = document.getElementById(`b-${id}`);
+          if (!el) return null;
+          const obs = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) setActive(id);
+          }, { rootMargin: "-40% 0px -55% 0px" });
+          obs.observe(el);
+          return obs;
+        });
+        return () => observers.forEach(o => o && o.disconnect());
+      }, []);
+
+      const scrollTo = id => {
+        const el = document.getElementById(`b-${id}`);
+        if (el) {
+          const top = el.getBoundingClientRect().top + window.scrollY - 80;
+          window.scrollTo({ top, behavior: "smooth" });
+        }
+      };
+
+      return (
+        <div className="variant-b">
+          <header className="b-topbar">
+            <div className="b-topbar-inner">
+              <div className="b-brand mono">
+                <span className="b-cursor">▍</span>
+                <span className="b-brand-name">tyrus.skipper</span>
+                <span className="b-brand-sep">:</span>
+                <span className="b-brand-role">qa-analyst</span>
+              </div>
+              <nav className="b-nav mono">
+                {sections.map(s => (
+                  <button key={s.id} onClick={() => scrollTo(s.id)} className={`b-nav-item ${active === s.id ? "active" : ""}`}>
+                    {s.label}
+                  </button>
+                ))}
+              </nav>
+              <a href={DATA.links.linkedin} target="_blank" rel="noopener" className="b-topbar-cta mono">
+                <Icon.LinkedIn />
+                <span>linkedin</span>
+              </a>
+            </div>
+          </header>
+
+          <main className="b-main">
+            <section id="b-about" className="b-hero">
+              <div className="b-hero-grid">
+                <div className="b-hero-left">
+                  <div className="b-prompt mono">$ whoami</div>
+                  <h1 className="b-hero-name">{DATA.name}</h1>
+                  <div className="b-hero-role mono">&gt; {DATA.role}</div>
+                  <p className="b-hero-tagline">{DATA.tagline}</p>
+
+                  <div className="b-cert-row">
+                    {DATA.certifications.map(c => (
+                      <a key={c.label} href={c.url} target="_blank" rel="noopener" className="b-cert mono">
+                        <span className="b-cert-dot" />
+                        {c.label}
+                        <Icon.Arrow />
+                      </a>
+                    ))}
+                  </div>
+
+                  <div className="b-hero-actions">
+                    <CopyEmail email={DATA.links.email} variant="b" />
+                    <a href={DATA.links.linkedin} target="_blank" rel="noopener" className="b-link-btn mono">
+                      <Icon.LinkedIn /> linkedin.com/in/tyrus-skipper
+                    </a>
+                  </div>
+                </div>
+
+                <div className="b-hero-right">
+                  <div className="b-terminal">
+                    <div className="b-terminal-bar">
+                      <span className="b-term-dot r"></span>
+                      <span className="b-term-dot y"></span>
+                      <span className="b-term-dot g"></span>
+                      <span className="b-term-title mono">tyrus@portfolio — zsh</span>
+                    </div>
+                    <div className="b-terminal-body mono">
+                      <div className="b-term-line"><span className="b-prompt-sm">$</span> cat about.md</div>
+                      {DATA.about.map((p, i) => (
+                        <div key={i} className="b-term-output">{p}</div>
+                      ))}
+                      <div className="b-term-line"><span className="b-prompt-sm">$</span> ls ./focus</div>
+                      <div className="b-term-output">
+                        manual_testing/   automation/   test_design/<br/>
+                        regression/       api_testing/  risk_analysis/
+                      </div>
+                      <div className="b-term-line"><span className="b-prompt-sm">$</span> <span className="b-term-blink">▍</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section id="b-projects" className="b-section">
+              <div className="b-section-head">
+                <div className="b-section-tag mono">// 02</div>
+                <h2>Projects & Apps</h2>
+                <div className="b-section-line"/>
+                <div className="b-section-count mono">{DATA.projects.length} items</div>
+              </div>
+              <div className="b-project-grid">
+                {DATA.projects.map((p, i) => (
+                  <a key={i} href={p.link} className="b-project">
+                    <div className="b-project-head">
+                      <span className="b-project-num mono">[{String(i + 1).padStart(2, "0")}]</span>
+                      <span className="b-project-status mono">{p.status === "coming-soon" ? "⧗ tba" : "● live"}</span>
+                    </div>
+                    <Placeholder label={`./${p.name.toLowerCase().replace(/\s+/g, "-")}`} aspect="16/9" />
+                    <div className="b-project-body">
+                      <h3>{p.name}</h3>
+                      <p>{p.desc}</p>
+                      <div className="b-project-foot">
+                        <div className="b-tags mono">
+                          {p.tech.map(t => <span key={t}>{t}</span>)}
+                        </div>
+                        <Icon.Arrow />
+                      </div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </section>
+
+            <section id="b-suites" className="b-section">
+              <div className="b-section-head">
+                <div className="b-section-tag mono">// 03</div>
+                <h2>Automated Testing Suites</h2>
+                <div className="b-section-line"/>
+                <div className="b-section-count mono">personal</div>
+              </div>
+              <div className="b-suite-table">
+                <div className="b-suite-header mono">
+                  <span>#</span>
+                  <span>suite</span>
+                  <span>tools</span>
+                  <span>coverage</span>
+                  <span></span>
+                </div>
+                {DATA.suites.map((s, i) => (
+                  <a key={i} href={s.link} className="b-suite-row">
+                    <span className="mono b-suite-idx">{String(i + 1).padStart(2, "0")}</span>
+                    <div className="b-suite-main">
+                      <div className="b-suite-name">{s.name}</div>
+                      <div className="b-suite-desc">{s.desc}</div>
+                    </div>
+                    <div className="mono b-suite-tools">{s.tools.join(", ")}</div>
+                    <div className="mono b-suite-cov">{s.coverage}</div>
+                    <Icon.Arrow />
+                  </a>
+                ))}
+              </div>
+            </section>
+
+            <section id="b-skills" className="b-section">
+              <div className="b-section-head">
+                <div className="b-section-tag mono">// 04</div>
+                <h2>Skills & Stack</h2>
+                <div className="b-section-line"/>
+              </div>
+              <div className="b-skill-grid">
+                {Object.entries(DATA.skills).map(([cat, items]) => (
+                  <div key={cat} className="b-skill-block">
+                    <div className="b-skill-cat mono">› {cat.toLowerCase()}</div>
+                    <div className="b-skill-items">
+                      {items.map(s => <span key={s} className="b-skill-chip mono">{s}</span>)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section id="b-experience" className="b-section">
+              <div className="b-section-head">
+                <div className="b-section-tag mono">// 05</div>
+                <h2>Experience</h2>
+                <div className="b-section-line"/>
+              </div>
+              <div className="b-timeline">
+                {DATA.experience.map((e, i) => (
+                  <div key={i} className="b-exp">
+                    <div className="b-exp-period mono">{e.period}</div>
+                    <div className="b-exp-body">
+                      <div className="b-exp-title-row">
+                        <h3>{e.role}</h3>
+                        <span className="b-exp-co mono">@ {e.company}</span>
+                      </div>
+                      <ul>
+                        {e.bullets.map((b, j) => <li key={j}>{b}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section id="b-contact" className="b-section b-contact">
+              <div className="b-section-head">
+                <div className="b-section-tag mono">// 06</div>
+                <h2>Contact</h2>
+                <div className="b-section-line"/>
+              </div>
+              <div className="b-contact-grid">
+                <div className="b-contact-card">
+                  <div className="mono b-contact-label">$ echo $EMAIL</div>
+                  <CopyEmail email={DATA.links.email} variant="b" />
+                </div>
+                <a href={DATA.links.linkedin} target="_blank" rel="noopener" className="b-contact-card b-contact-link">
+                  <div className="mono b-contact-label">$ open $LINKEDIN</div>
+                  <div className="b-contact-val">
+                    <Icon.LinkedIn />
+                    <span>linkedin.com/in/tyrus-skipper</span>
+                    <Icon.Arrow />
+                  </div>
+                </a>
+              </div>
+              <footer className="b-footer mono">
+                <span>// © 2026 {DATA.name}</span>
+                <span>built &amp; tested — apr 2026</span>
+              </footer>
+            </section>
+          </main>
+        </div>
+      );
+    };
+
+    // ============ TWEAKS PANEL ============
+    const Tweaks = ({ variant, setVariant, accent, setAccent, onClose }) => {
+      const accents = [
+        { key: "cyan", label: "Cyan", color: "oklch(78% 0.13 200)" },
+        { key: "lime", label: "Lime", color: "oklch(82% 0.14 130)" },
+        { key: "violet", label: "Violet", color: "oklch(72% 0.14 290)" },
+        { key: "amber", label: "Amber", color: "oklch(80% 0.13 75)" }
+      ];
+      return (
+        <div className="tweaks-panel">
+          <div className="tweaks-head">
+            <span>Customize</span>
+            <button onClick={onClose} className="tweaks-close" aria-label="Close">×</button>
+          </div>
+          <div className="tweaks-body">
+            <div className="tweaks-section">
+              <div className="tweaks-label">Layout</div>
+              <div className="tweaks-variants">
+                <button className={variant === "a" ? "active" : ""} onClick={() => setVariant("a")}>
+                  <div className="tweaks-variant-name">A · Sidebar</div>
+                  <div className="tweaks-variant-desc">Classic two-col</div>
+                </button>
+                <button className={variant === "b" ? "active" : ""} onClick={() => setVariant("b")}>
+                  <div className="tweaks-variant-name">B · Terminal</div>
+                  <div className="tweaks-variant-desc">Mono, dev-inspired</div>
+                </button>
+              </div>
+            </div>
+            <div className="tweaks-section">
+              <div className="tweaks-label">Accent</div>
+              <div className="tweaks-accents">
+                {accents.map(a => (
+                  <button key={a.key} className={`tweaks-accent ${accent === a.key ? "active" : ""}`} onClick={() => setAccent(a.key)} style={{ "--sw": a.color }}>
+                    <span className="tweaks-accent-dot" />
+                    <span>{a.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // ============ ROOT ============
+    const Portfolio = ({ defaults }) => {
+      const [variant, setVariant] = useState(defaults.variant);
+      const [accent, setAccent] = useState(defaults.accent);
+      const [tweaksOpen, setTweaksOpen] = useState(false);
+
+      useEffect(() => {
+        const accentMap = {
+          cyan: { hue: 200, chroma: 0.13 },
+          lime: { hue: 130, chroma: 0.14 },
+          violet: { hue: 290, chroma: 0.14 },
+          amber: { hue: 75, chroma: 0.13 }
+        };
+        const { hue, chroma } = accentMap[accent] || accentMap.cyan;
+        const root = document.documentElement;
+        root.style.setProperty("--accent", `oklch(78% ${chroma} ${hue})`);
+        root.style.setProperty("--accent-dim", `oklch(55% ${chroma * 0.7} ${hue})`);
+        root.style.setProperty("--accent-soft", `oklch(30% ${chroma * 0.5} ${hue} / 0.2)`);
+        root.style.setProperty("--accent-text", `oklch(88% ${chroma * 0.5} ${hue})`);
+      }, [accent]);
+
+      useEffect(() => {
+        document.documentElement.style.scrollBehavior = "smooth";
+      }, []);
+
+      return (
+        <>
+          {variant === "a" ? <VariantA /> : <VariantB />}
+          {tweaksOpen ? (
+            <Tweaks
+              variant={variant}
+              setVariant={setVariant}
+              accent={accent}
+              setAccent={setAccent}
+              onClose={() => setTweaksOpen(false)}
+            />
+          ) : (
+            <button className="customize-fab" onClick={() => setTweaksOpen(true)} aria-label="Customize appearance">
+              <span className="customize-fab-dot" />
+              Customize
+            </button>
+          )}
+        </>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<Portfolio defaults={{ variant: "a", accent: "cyan" }} />);
+  </script>
+</body>
+</html>
