@@ -129,6 +129,7 @@ p { color: var(--fg-dim); line-height: 1.6; }
   overflow: hidden;
 }
 .a-avatar .placeholder { border-radius: 50%; aspect-ratio: 1/1; }
+.a-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; display: block; }
 .a-name { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; }
 .a-role { font-size: 13px; color: var(--fg-dim); font-family: var(--mono); }
 .a-tagline {
