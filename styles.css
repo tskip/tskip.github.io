@@ -124,7 +124,7 @@ p { color: var(--fg-dim); line-height: 1.6; }
 
 .a-brand { display: flex; flex-direction: column; gap: 12px; }
 .a-avatar {
-  width: 72px; height: 72px;
+  width: 140px; height: 140px;
   border-radius: 50%;
   overflow: hidden;
 }
